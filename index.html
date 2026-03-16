@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CPS Research Seminar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       #ffffff;
+      --surface:  #f5f5f3;
+      --border:   #e2e2dc;
+      --accent:   #1a6b4a;
+      --accent2:  #2255aa;
+      --muted:    #9a9a90;
+      --text:     #1a1a18;
+      --text-dim: #5a5a52;
+      --mono:     'IBM Plex Mono', monospace;
+      --serif:    'Instrument Serif', serif;
+      --sans:     'DM Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+
+
+    /* ── layout ── */
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── header ── */
+    header {
+      padding: 4rem 0 3rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0;
+    }
+
+    .header-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .header-label::before {
+      content: '';
+      display: inline-block;
+      width: 24px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 6vw, 3.6rem);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      color: #1a1a18;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 em {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .header-meta {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1.8rem;
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .meta-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .meta-value {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--accent2);
+    }
+
+    /* ── section titles ── */
+    .section-title {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── about section ── */
+    .about {
+      padding: 3.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .about-body {
+      font-size: 1.05rem;
+      color: var(--text-dim);
+      max-width: 640px;
+      line-height: 1.85;
+    }
+
+    .about-body p + p { margin-top: 1rem; }
+
+    /* ── schedule section ── */
+    .schedule {
+      padding: 3.5rem 0 5rem;
+    }
+
+    .slot-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .slot {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 0 1.5rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+      transition: background 0.15s;
+    }
+
+    .slot:first-child { border-top: 1px solid var(--border); }
+
+    .slot:hover {
+      background: rgba(74, 240, 196, 0.02);
+    }
+
+    .slot-date {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--accent);
+      padding-top: 0.1rem;
+      white-space: nowrap;
+    }
+
+    .slot-day {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      display: block;
+      margin-top: 0.1rem;
+    }
+
+    .slot-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .slot-speaker {
+      font-size: 0.93rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .slot-topic {
+      font-size: 0.875rem;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+
+    .slot-empty .slot-speaker,
+    .slot-empty .slot-topic {
+      color: var(--border);
+      font-style: normal;
+    }
+
+    .slot-empty .slot-speaker::after {
+      content: '—';
+    }
+
+    .slot-empty .slot-topic::after {
+      content: '—';
+    }
+
+    /* ── footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    /* ── corner decoration ── */
+    .corner-deco {
+      position: absolute;
+      top: 3.5rem;
+      right: 0;
+      width: 160px;
+      height: 160px;
+      opacity: 0.06;
+      pointer-events: none;
+    }
+
+    @media (max-width: 600px) {
+      .slot {
+        grid-template-columns: 90px 1fr;
+        gap: 0 1rem;
+      }
+      .header-meta { gap: 1.2rem; }
+      .corner-deco { display: none; }
+    }
+
+    /* ── entrance animation ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    header, .about, .schedule {
+      animation: fadeUp 0.6s ease both;
+    }
+    .about  { animation-delay: 0.1s; }
+    .schedule { animation-delay: 0.2s; }
+
+    .slot {
+      animation: fadeUp 0.4s ease both;
+    }
+
+    /* stagger slots */
+    .slot:nth-child(1)  { animation-delay: 0.22s; }
+    .slot:nth-child(2)  { animation-delay: 0.26s; }
+    .slot:nth-child(3)  { animation-delay: 0.30s; }
+    .slot:nth-child(4)  { animation-delay: 0.34s; }
+    .slot:nth-child(5)  { animation-delay: 0.38s; }
+    .slot:nth-child(6)  { animation-delay: 0.42s; }
+    .slot:nth-child(7)  { animation-delay: 0.46s; }
+    .slot:nth-child(8)  { animation-delay: 0.50s; }
+    .slot:nth-child(9)  { animation-delay: 0.54s; }
+    .slot:nth-child(10) { animation-delay: 0.58s; }
+    .slot:nth-child(11) { animation-delay: 0.62s; }
+    .slot:nth-child(12) { animation-delay: 0.66s; }
+    .slot:nth-child(13) { animation-delay: 0.70s; }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ── Header ── -->
+  <header>
+    <div class="header-label">Research Group Seminar</div>
+    <h1>CPS<br><em>Research Seminar</em></h1>
+    <div class="header-meta">
+      <div class="meta-item">
+        <span class="meta-label">Frequency</span>
+        <span class="meta-value">Every Friday</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Season</span>
+        <span class="meta-value">SS 2025</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Topics</span>
+        <span class="meta-value">AI · Robotics · Research</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── About ── -->
+  <section class="about">
+    <div class="section-title">About</div>
+    <div class="about-body">
+      <p>
+        The CPS Research Seminar is a weekly internal gathering where members of the group share
+        their ongoing work, explore new ideas, and engage in open discussion. The seminar is
+        intentionally broad — anything at the intersection of AI, machine learning, and robotics
+        is welcome.
+      </p>
+      <p>
+        Presentations can take many forms: paper walkthroughs, thesis progress updates,
+        early-stage research ideas, live demos, or simply a talk on a topic you found
+        interesting. There is no strict format — bring whatever you have and let the
+        discussion flow from there.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Schedule ── -->
+  <section class="schedule">
+    <div class="section-title">Schedule — SS 2025</div>
+
+    <div class="slot-list">
+
+      <div class="slot slot-empty">
+        <div class="slot-date">
+          27.03
+          <span class="slot-day">Friday</span>
+        </div>
+        <div class="slot-info">
+          <span class="slot-speaker"></span>
+          <span class="slot-topic"></span>
+        </div>
+      </div>
+
+      <div class="slot slot-empty">
+        <div class="slot-date">
+          03.04
+          <span class="slot-day">Friday</span>
+        </div>
+        <div class="slot-info">
+          <span class="slot-speaker"></span>
+          <span class="slot-topic"></span>
+        </div>
+      </div>
+
+      <div class="slot slot-empty">
+        <div class="slot-date">
+          10.04
+          <span class="slot-day">Friday</span>
+        </div>
+        <div class="slot-info">
+          <span class="slot-speaker"></span>
+          <span class="slot-topic"></span>
+        </div>
+      </div>
+
+      <div class="slot slot-empty">
+        <div class="slot-date">
+          17.04
+          <span class="slot-day">Friday</span>
+        </div>
+        <div class="slot-info">
+          <span class="slot-speaker"></span>
+          <span class="slot-topic"></span>
+        </div>
+      </div>
+
+      <div class="slot slot-empty">
+        <div class="slot-date">
+          24.04
+          <span class="slot-day">Friday</span>
+        </div>
+        <div class="slot-info">
+          <span class="slot-speaker"></span>
+          <span class="slot-topic"></span>
+        </div>
+      </div>
+
+      <div class="slot slot-empty">
+        <div class="slot-date">
+          01.05
+          <span class="slot-day">Friday</span>
+        </div>
+        <div class="slot-info">
+          <span class="slot-speaker"></span>
+          <span class="slot-topic"></span>
+        </div>
+      </div>
+
+      <div class="slot slot-empty">
+        <div class="slot-date">
+          08.05
+          <span class="slot-day">Friday</span>
+        </div>
+        <div class="slot-info">
+          <span class="slot-speaker"></span>
+          <span class="slot-topic"></span>
+        </div>
+      </div>
+
+      <div class="slot slot-empty">
+        <div class="slot-date">
+          15.05
+          <span class="slot-day">Friday</span>
+        </div>
+        <div class="slot-info">
+          <span class="slot-speaker"></span>
+          <span class="slot-topic"></span>
+        </div>
+      </div>
+
+      <div class="slot slot-empty">
+        <div class="slot-date">
+          22.05
+          <span class="slot-day">Friday</span>
+        </div>
+        <div class="slot-info">
+          <span class="slot-speaker"></span>
+          <span class="slot-topic"></span>
+        </div>
+      </div>
+
+      <div class="slot slot-empty">
+        <div class="slot-date">
+          29.05
+          <span class="slot-day">Friday</span>
+        </div>
+        <div class="slot-info">
+          <span class="slot-speaker"></span>
+          <span class="slot-topic"></span>
+        </div>
+      </div>
+
+      <div class="slot slot-empty">
+        <div class="slot-date">
+          05.06
+          <span class="slot-day">Friday</span>
+        </div>
+        <div class="slot-info">
+          <span class="slot-speaker"></span>
+          <span class="slot-topic"></span>
+        </div>
+      </div>
+
+      <div class="slot slot-empty">
+        <div class="slot-date">
+          12.06
+          <span class="slot-day">Friday</span>
+        </div>
+        <div class="slot-info">
+          <span class="slot-speaker"></span>
+          <span class="slot-topic"></span>
+        </div>
+      </div>
+
+      <div class="slot slot-empty">
+        <div class="slot-date">
+          19.06
+          <span class="slot-day">Friday</span>
+        </div>
+        <div class="slot-info">
+          <span class="slot-speaker"></span>
+          <span class="slot-topic"></span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <span>CPS Research Seminar · SS 2025</span>
+    <span>Updated regularly</span>
+  </footer>
+
+</div>
+</body>
+</html>
